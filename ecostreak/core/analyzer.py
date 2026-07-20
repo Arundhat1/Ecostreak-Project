@@ -8,7 +8,7 @@ from __future__ import annotations
  
 from typing import Any
 import pandas as pd
- 
+from pandas.errors import EmptyDataError 
 from ecostreak.core.energy import load_log
 from ecostreak.core.streak import Streak, detect_streaks, streaks_to_dataframe
  
@@ -35,7 +35,10 @@ def analyze_usage(
         streaks (list[dict]),
         streak_count, total_streak_seconds, longest_streak_seconds
     """
-    df = load_log(log_path)
+    try:
+       df = pd.read_csv(log_path)
+    except EmptyDataError:
+       raise ValueError("Log file is empty.")
  
     above = df["cpu_percent"] >= threshold
     pct_above = round(float(above.mean()) * 100, 2)
