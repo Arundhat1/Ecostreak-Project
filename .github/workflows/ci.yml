@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+    branches: ["main", "master"]
+
+jobs:
+  test:
+    name: Test (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.11"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Run tests
+        run: pytest tests/ -v --tb=short
+
+      - name: Check imports (smoke test)
+        run: |
+          python -c "from ecostreak.core.streak import detect_streaks; print('streak OK')"
+          python -c "from ecostreak.core.energy import estimate_energy; print('energy OK')"
+          python -c "from ecostreak.core.analyzer import analyze_usage, top_processes_during_streaks; print('analyzer OK')"
