@@ -47,7 +47,6 @@ def load_log(log_path: str) -> pd.DataFrame:
     ValueError
         If required columns are missing or the file is empty after cleaning.
     """
-    df = pd.read_csv(log_path, usecols=["timestamp", "cpu_percent"], on_bad_lines="skip")
     try:
         df = pd.read_csv(log_path, usecols=["timestamp", "cpu_percent"], on_bad_lines="skip")
     except EmptyDataError as e:
