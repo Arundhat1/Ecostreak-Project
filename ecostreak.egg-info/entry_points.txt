@@ -1,0 +1,2 @@
+[console_scripts]
+ecostreak-cli = ecostreak.cli.main:main

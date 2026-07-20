@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "ecostreak"
+version = "0.3.0"
+description = "CPU usage streak tracker with energy and CO2 mapping"
+requires-python = ">=3.9"
+dependencies = [
+    "psutil>=5.9",
+    "pandas>=2.0",
+    "matplotlib>=3.7",
+    "seaborn>=0.12",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+]
+
+[project.scripts]
+ecostreak = "ecostreak.cli.main:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ecostreak*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
