@@ -9,7 +9,7 @@ reimplement these calculations — import from here.
 from __future__ import annotations
 
 import pandas as pd
-
+from pandas.errors import EmptyDataError
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -48,7 +48,10 @@ def load_log(log_path: str) -> pd.DataFrame:
         If required columns are missing or the file is empty after cleaning.
     """
     df = pd.read_csv(log_path, usecols=["timestamp", "cpu_percent"], on_bad_lines="skip")
-
+    try:
+        df = pd.read_csv(log_path, usecols=["timestamp", "cpu_percent"], on_bad_lines="skip")
+    except EmptyDataError as e:
+        raise ValueError("Log file is empty.") from e
     if df.empty:
         raise ValueError(f"Log file is empty or has no valid rows: {log_path}")
 
@@ -57,7 +60,7 @@ def load_log(log_path: str) -> pd.DataFrame:
     if missing:
         raise ValueError(f"Missing columns {missing} in {log_path}")
 
-    df["timestamp"] = pd.to_datetime(df["timestamp"], utc=False)
+    df["timestamp"] = pd.to_datetime(df["timestamp"], errors="coerce")
     df["cpu_percent"] = pd.to_numeric(df["cpu_percent"], errors="coerce")
     df = df.dropna(subset=["timestamp", "cpu_percent"])
     df = df[df["cpu_percent"].between(0.0, 100.0)]  # sanity-check range
