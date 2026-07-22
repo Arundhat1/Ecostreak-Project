@@ -1,6 +1,16 @@
+
+venv/
 ecostreak-env/
+ecostreak.egg-info/
 __pycache__/
 *.pyc
+*.pyo
 .pytest_cache/
 data/raw/*.csv
+data/*.csv
+data/*.png
 outputs/
+tree.txt
+notebooks/
+
+
